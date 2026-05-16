@@ -1,0 +1,50 @@
+<h1 class="headline">Waiting room</h1>
+<p class="sub">Appointments marked active for the selected date are counted as in the waiting room.</p>
+
+<mat-form-field appearance="outline" class="date-field">
+  <mat-label>Waiting room date</mat-label>
+  <input matInput type="date" [formControl]="dateControl" />
+</mat-form-field>
+
+@if (loading) {
+  <div class="center">
+    <mat-spinner diameter="40" />
+  </div>
+} @else if (error) {
+  <mat-card>
+    <mat-card-content>
+      <p class="error">{{ error }}</p>
+      <button mat-stroked-button type="button" (click)="load()">Retry</button>
+    </mat-card-content>
+  </mat-card>
+} @else {
+  <mat-card class="summary">
+    <mat-card-content>
+      <div class="count">{{ waiting.length }}</div>
+      <div class="label">active appointments on {{ dateControl.getRawValue() }}</div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="list">
+    @for (a of waiting; track a.id) {
+      <mat-card class="patient-card">
+        <mat-card-content>
+          <div class="row">
+            <div>
+              <div class="name">{{ a.patient.firstName }} {{ a.patient.lastName }}</div>
+              <div class="meta">
+                {{ a.patient.patientCode }} | DOB {{ a.patient.dateOfBirth }} |
+                {{ a.scheduledStart | date: 'shortTime' }} with Dr. {{ a.doctor.lastName }}
+              </div>
+            </div>
+            <a mat-stroked-button [routerLink]="['/patients', a.patient.id]" [queryParams]="{ appointmentId: a.id }">
+              Open profile
+            </a>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    } @empty {
+      <p class="empty">No active appointments in the waiting room for this date.</p>
+    }
+  </div>
+}

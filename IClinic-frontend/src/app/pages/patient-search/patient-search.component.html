@@ -1,0 +1,58 @@
+<header class="page-header">
+  <div>
+    <h1>Search patients</h1>
+    <p>Find a patient by name, patient code, date of birth, phone, email, city, or insurance details.</p>
+  </div>
+  <a mat-flat-button color="primary" routerLink="/patients/register">Register patient</a>
+</header>
+
+<div class="toolbar">
+  <mat-form-field appearance="outline" class="search">
+    <mat-label>Search</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input
+      matInput
+      type="search"
+      [value]="query()"
+      (input)="updateQuery($any($event.target).value)"
+      autocomplete="off"
+    />
+  </mat-form-field>
+  <button mat-stroked-button type="button" (click)="load()">Refresh</button>
+</div>
+
+@if (loading) {
+  <div class="center">
+    <mat-spinner diameter="40" />
+  </div>
+} @else if (error) {
+  <div class="notice error">
+    <p>{{ error }}</p>
+    <button mat-stroked-button type="button" (click)="load()">Retry</button>
+  </div>
+} @else {
+  <div class="summary">{{ filtered().length }} of {{ patients().length }} patients</div>
+
+  <div class="results">
+    @for (patient of filtered(); track patient.id) {
+      <article class="patient-row">
+        <div class="identity">
+          <div class="name">{{ patient.firstName }} {{ patient.lastName }}</div>
+          <div class="meta">
+            {{ patient.patientCode }} · {{ patient.dateOfBirth }} · {{ patient.gender }}
+          </div>
+        </div>
+        <div class="contact">
+          <span>{{ patient.phone || 'No phone' }}</span>
+          <span>{{ patient.email || 'No email' }}</span>
+        </div>
+        <a mat-stroked-button [routerLink]="['/patients', patient.id]">Open profile</a>
+      </article>
+    } @empty {
+      <div class="notice">
+        <p>No patients match this search.</p>
+        <a mat-stroked-button routerLink="/patients/register">Register patient</a>
+      </div>
+    }
+  </div>
+}

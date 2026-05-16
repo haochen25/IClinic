@@ -1,0 +1,212 @@
+<a mat-button routerLink="/waiting-room" class="back">Back to waiting room</a>
+
+@if (loading) {
+  <div class="center">
+    <mat-spinner diameter="40" />
+  </div>
+} @else if (error || !patient) {
+  <mat-card>
+    <mat-card-content>
+      <p class="error">{{ error ?? 'Patient not found.' }}</p>
+    </mat-card-content>
+  </mat-card>
+} @else {
+  <div class="header">
+    <div>
+      <h1 class="headline">{{ patient.firstName }} {{ patient.lastName }}</h1>
+      <p class="sub">
+        {{ patient.patientCode }}
+        @if (appointment) {
+          | Appointment {{ appointment.scheduledStart | date: 'short' }}
+          | {{ appointment.active ? 'Active in waiting room' : 'Not active in waiting room' }}
+        }
+      </p>
+    </div>
+    @if (appointment) {
+      <button mat-flat-button color="primary" type="button" [disabled]="statusSaving" (click)="toggleActiveStatus()">
+        @if (statusSaving) {
+          Saving...
+        } @else {
+          {{ appointment.active ? 'Mark appointment inactive' : 'Mark appointment active' }}
+        }
+      </button>
+    }
+  </div>
+  @if (statusMessage) {
+    <p [class]="statusMessage.startsWith('Appointment') ? 'ok' : 'error'">{{ statusMessage }}</p>
+  }
+
+  <mat-tab-group>
+    <mat-tab label="Profile">
+      <mat-card class="panel">
+        <mat-card-content class="grid">
+          <div>
+            <div class="label">Date of birth</div>
+            <div>{{ patient.dateOfBirth }}</div>
+          </div>
+          <div>
+            <div class="label">Gender</div>
+            <div>{{ patient.gender }}</div>
+          </div>
+          <div>
+            <div class="label">Email</div>
+            <div>{{ patient.email || '-' }}</div>
+          </div>
+          <div>
+            <div class="label">Phone</div>
+            <div>{{ patient.phone || '-' }}</div>
+          </div>
+          <div class="full">
+            <div class="label">Address</div>
+            <div>
+              @if (patient.addressLine1 || patient.city) {
+                <span>{{ patient.addressLine1 }}</span>
+                @if (patient.addressLine2) {
+                  <span>, {{ patient.addressLine2 }}</span>
+                }
+                <br />
+                {{ patient.city }} {{ patient.stateOrProvince }} {{ patient.postalCode }}
+                <br />
+                {{ patient.country }}
+              } @else {
+                -
+              }
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-tab>
+
+    <mat-tab label="Visit history">
+      <mat-card class="panel">
+        <mat-card-content>
+          @if (isDoctor) {
+            <form class="note-form" [formGroup]="visitNoteForm" (ngSubmit)="saveVisitNote()">
+              <div class="note-grid">
+                <mat-form-field appearance="outline">
+                  <mat-label>Chief complaint</mat-label>
+                  <input matInput formControlName="chiefComplaint" />
+                  @if (visitNoteForm.controls.chiefComplaint.hasError('maxlength')) {
+                    <mat-error>Chief complaint must be 300 characters or fewer.</mat-error>
+                  }
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>Diagnosis</mat-label>
+                  <input matInput formControlName="diagnosis" />
+                  @if (visitNoteForm.controls.diagnosis.hasError('maxlength')) {
+                    <mat-error>Diagnosis must be 500 characters or fewer.</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+              <mat-form-field appearance="outline" class="full">
+                <mat-label>Visit history note</mat-label>
+                <textarea matInput rows="5" formControlName="notes"></textarea>
+                @if (visitNoteForm.controls.notes.hasError('maxlength')) {
+                  <mat-error>Notes must be 2000 characters or fewer.</mat-error>
+                }
+              </mat-form-field>
+              @if (visitNoteMessage) {
+                <p [class]="visitNoteMessage.startsWith('Visit') ? 'ok' : 'error'">{{ visitNoteMessage }}</p>
+              }
+              <button mat-flat-button color="primary" type="submit" [disabled]="visitNoteSaving">
+                {{ visitNoteSaving ? 'Saving...' : 'Save visit note' }}
+              </button>
+            </form>
+          }
+
+          @if (visits.length === 0) {
+            <p class="muted">No visits recorded yet.</p>
+          } @else {
+            <div class="visits">
+              @for (v of visits; track v.id) {
+                <div class="visit">
+                  @if (editingVisitId === v.id) {
+                    <form class="visit-edit-form" [formGroup]="visitEditForm" (ngSubmit)="saveVisitEdit(v)">
+                      <div class="visit-when">{{ v.visitDateTime | date: 'medium' }}</div>
+                      <div class="note-grid">
+                        <mat-form-field appearance="outline">
+                          <mat-label>Chief complaint</mat-label>
+                          <input matInput formControlName="chiefComplaint" />
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                          <mat-label>Diagnosis</mat-label>
+                          <input matInput formControlName="diagnosis" />
+                        </mat-form-field>
+                      </div>
+                      <mat-form-field appearance="outline" class="full">
+                        <mat-label>Visit history note</mat-label>
+                        <textarea matInput rows="4" formControlName="notes"></textarea>
+                      </mat-form-field>
+                      @if (visitEditMessage) {
+                        <p class="error">{{ visitEditMessage }}</p>
+                      }
+                      <div class="inline-actions">
+                        <button mat-flat-button color="primary" type="submit" [disabled]="visitEditSaving">
+                          {{ visitEditSaving ? 'Saving...' : 'Save changes' }}
+                        </button>
+                        <button mat-button type="button" (click)="cancelEditVisit()" [disabled]="visitEditSaving">
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  } @else {
+                    <div class="visit-header">
+                      <div class="visit-when">{{ v.visitDateTime | date: 'medium' }}</div>
+                      @if (canEditVisit(v)) {
+                        <button mat-stroked-button type="button" (click)="startEditVisit(v)">Edit</button>
+                      }
+                    </div>
+                    <div class="visit-line">
+                      <strong>Complaint:</strong> {{ v.chiefComplaint || '-' }}
+                    </div>
+                    <div class="visit-line">
+                      <strong>Diagnosis:</strong> {{ v.diagnosis || '-' }}
+                    </div>
+                    <div class="visit-line">
+                      <strong>Provider:</strong>
+                      @if (v.seenByDoctor) {
+                        Dr. {{ v.seenByDoctor.firstName }} {{ v.seenByDoctor.lastName }}
+                      } @else {
+                        -
+                      }
+                    </div>
+                    @if (v.notes) {
+                      <div class="visit-notes">{{ v.notes }}</div>
+                    }
+                  }
+                </div>
+              }
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+    </mat-tab>
+
+    <mat-tab label="Insurance">
+      <mat-card class="panel">
+        <mat-card-content>
+          <form [formGroup]="insuranceForm" (ngSubmit)="saveInsurance()">
+            <mat-form-field appearance="outline" class="full">
+              <mat-label>Plan / carrier</mat-label>
+              <input matInput formControlName="insuranceProvider" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full">
+              <mat-label>Member ID</mat-label>
+              <input matInput formControlName="insuranceMemberId" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full">
+              <mat-label>Group number</mat-label>
+              <input matInput formControlName="insuranceGroupNumber" />
+            </mat-form-field>
+            @if (insuranceMessage) {
+              <p [class]="insuranceMessage.startsWith('Insurance') ? 'ok' : 'error'">{{ insuranceMessage }}</p>
+            }
+            <button mat-flat-button color="primary" type="submit" [disabled]="insuranceSaving">
+              {{ insuranceSaving ? 'Saving...' : 'Save insurance' }}
+            </button>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </mat-tab>
+  </mat-tab-group>
+}

@@ -1,0 +1,83 @@
+.headline {
+  margin: 0 0 0.25rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.sub {
+  margin: 0 0 1.25rem;
+  color: rgba(0, 0, 0, 0.65);
+  max-width: 52rem;
+}
+
+.picker-card {
+  margin-bottom: 1rem;
+}
+
+.picker-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.error {
+  color: #b00020;
+}
+
+.slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.65rem;
+}
+
+.slot {
+  text-align: left;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  background: #fff;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.slot:hover {
+  background: #f5f9ff;
+  border-color: rgba(25, 118, 210, 0.35);
+}
+
+.slot.busy {
+  background: #f8fafc;
+}
+
+.slot-time {
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.slot-free {
+  font-size: 0.875rem;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.slot-appt {
+  font-size: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.patient-name {
+  font-weight: 500;
+}
+
+.appt-meta {
+  color: rgba(0, 0, 0, 0.55);
+  font-size: 0.8rem;
+}

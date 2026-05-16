@@ -1,0 +1,33 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: linear-gradient(160deg, #e8f5e9 0%, #fafafa 45%, #ffffff 100%);
+}
+
+.card {
+  width: 100%;
+  max-width: 480px;
+}
+
+.full {
+  width: 100%;
+  display: block;
+}
+
+.row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.half {
+  flex: 1;
+}
+
+.error {
+  color: #b00020;
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+}

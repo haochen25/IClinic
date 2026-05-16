@@ -1,0 +1,40 @@
+<mat-sidenav-container class="shell">
+  <mat-sidenav mode="side" opened class="nav">
+    <div class="brand">IClinic</div>
+    <mat-nav-list>
+      <a mat-list-item routerLink="/waiting-room" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <mat-icon matListItemIcon>groups</mat-icon>
+        <span matListItemTitle>Waiting room</span>
+      </a>
+      <a mat-list-item routerLink="/schedule" routerLinkActive="active">
+        <mat-icon matListItemIcon>calendar_month</mat-icon>
+        <span matListItemTitle>Schedule</span>
+      </a>
+      <a mat-list-item routerLink="/patients/search" routerLinkActive="active">
+        <mat-icon matListItemIcon>manage_search</mat-icon>
+        <span matListItemTitle>Search patients</span>
+      </a>
+      <a mat-list-item routerLink="/patients/register" routerLinkActive="active">
+        <mat-icon matListItemIcon>person_add</mat-icon>
+        <span matListItemTitle>Register patient</span>
+      </a>
+      <a mat-list-item routerLink="/staff/register" routerLinkActive="active">
+        <mat-icon matListItemIcon>badge</mat-icon>
+        <span matListItemTitle>Staff</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <span class="title">Clinic workspace</span>
+      <span class="spacer"></span>
+      @if (user) {
+        <span class="who">{{ user.firstName }} {{ user.lastName }}</span>
+      }
+      <button mat-button type="button" (click)="logout()">Sign out</button>
+    </mat-toolbar>
+    <main class="main">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

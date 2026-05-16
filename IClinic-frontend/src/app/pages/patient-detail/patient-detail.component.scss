@@ -1,0 +1,127 @@
+.back {
+  margin-bottom: 0.75rem;
+}
+
+.headline {
+  margin: 0 0 0.25rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.sub {
+  margin: 0 0 1rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.error {
+  color: #b00020;
+}
+
+.ok {
+  color: #1b5e20;
+  font-size: 0.9rem;
+}
+
+.panel {
+  margin-top: 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.grid .full {
+  grid-column: 1 / -1;
+}
+
+.label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(0, 0, 0, 0.55);
+  margin-bottom: 0.2rem;
+}
+
+.muted {
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.visits {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.note-form {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+}
+
+.note-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.visit {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding-bottom: 1rem;
+}
+
+.visit:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.visit-when {
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.visit-header,
+.inline-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.visit-header {
+  justify-content: space-between;
+}
+
+.visit-edit-form {
+  display: block;
+}
+
+.visit-line {
+  font-size: 0.9rem;
+  margin-bottom: 0.2rem;
+}
+
+.visit-notes {
+  margin-top: 0.35rem;
+  font-size: 0.875rem;
+  color: rgba(0, 0, 0, 0.7);
+  white-space: pre-wrap;
+}
+
+.full {
+  width: 100%;
+  display: block;
+}

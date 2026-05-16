@@ -1,0 +1,50 @@
+<h1 class="headline">Schedule</h1>
+<p class="sub">Pick a date to see appointments. Tap a free slot to book; tap a booked slot to open the patient profile.</p>
+
+<mat-card class="picker-card">
+  <mat-card-content class="picker-row">
+    <mat-form-field appearance="outline">
+      <mat-label>Date</mat-label>
+      <input matInput [matDatepicker]="picker" [formControl]="dateControl" />
+      <mat-datepicker-toggle matIconSuffix [for]="picker" />
+      <mat-datepicker #picker />
+    </mat-form-field>
+    <button mat-stroked-button type="button" (click)="refresh()" [disabled]="loading">Reload</button>
+  </mat-card-content>
+</mat-card>
+
+@if (loading) {
+  <div class="center">
+    <mat-spinner diameter="40" />
+  </div>
+} @else if (error) {
+  <mat-card>
+    <mat-card-content>
+      <p class="error">{{ error }}</p>
+      <button mat-stroked-button type="button" (click)="refresh()">Retry</button>
+    </mat-card-content>
+  </mat-card>
+} @else {
+  <div class="slots">
+    @for (slot of slots; track slot.label) {
+      <button
+        type="button"
+        class="slot"
+        [class.busy]="slot.appointments.length > 0"
+        (click)="openSlot(slot)"
+      >
+        <div class="slot-time">{{ slot.label }}</div>
+        @if (slot.appointments.length === 0) {
+          <div class="slot-free">Available</div>
+        } @else {
+          @for (a of slot.appointments; track a.id) {
+            <div class="slot-appt">
+              <span class="patient-name">{{ a.patient.lastName }}, {{ a.patient.firstName }}</span>
+              <span class="appt-meta">{{ a.status }} · Dr. {{ a.doctor.lastName }}{{ a.active ? ' · Active' : '' }}</span>
+            </div>
+          }
+        }
+      </button>
+    }
+  </div>
+}
