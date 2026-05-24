@@ -1,0 +1,61 @@
+<div class="assistant-widget" [class.open]="isOpen">
+  @if (isOpen) {
+    <section class="assistant-panel" aria-label="AI assistant">
+      <header class="assistant-header">
+        <div>
+          <h2>IClinic AI</h2>
+          <p>Powered by local Ollama</p>
+        </div>
+        <button mat-icon-button type="button" matTooltip="Close assistant" (click)="toggle()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </header>
+
+      <div #thread class="assistant-thread">
+        @for (message of messages; track $index) {
+          <article class="message" [class.user]="message.role === 'user'">
+            <div class="bubble">{{ message.content }}</div>
+          </article>
+        }
+
+        @if (isLoading) {
+          <article class="message">
+            <div class="bubble loading">
+              <mat-spinner diameter="18"></mat-spinner>
+              <span>Thinking</span>
+            </div>
+          </article>
+        }
+
+        @if (error) {
+          <p class="assistant-error">{{ error }}</p>
+        }
+      </div>
+
+
+
+      <p class="assistant-note">Use clinician judgement for medical decisions.</p>
+
+      <form class="composer" (ngSubmit)="send()">
+        <mat-form-field appearance="outline" class="composer-field">
+          <textarea
+            matInput
+            name="assistantMessage"
+            rows="2"
+            placeholder="Ask the assistant"
+            [(ngModel)]="draft"
+            [disabled]="isLoading"
+            (keydown.enter)="handleEnter($event)"
+          ></textarea>
+        </mat-form-field>
+        <button mat-fab color="primary" type="submit" matTooltip="Send message" [disabled]="isLoading || !draft.trim()">
+          <mat-icon>send</mat-icon>
+        </button>
+      </form>
+    </section>
+  }
+
+  <button mat-fab color="primary" type="button" class="assistant-launcher" matTooltip="Open AI assistant" (click)="toggle()">
+    <mat-icon>{{ isOpen ? 'close' : 'support_agent' }}</mat-icon>
+  </button>
+</div>

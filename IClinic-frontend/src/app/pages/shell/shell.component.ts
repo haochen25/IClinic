@@ -6,6 +6,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../core/auth.service';
+import { AiAssistantComponent } from '../../components/ai-assistant/ai-assistant.component';
 
 @Component({
   selector: 'app-shell',
@@ -19,6 +20,7 @@ import { AuthService } from '../../core/auth.service';
     MatListModule,
     MatButtonModule,
     MatIconModule,
+    AiAssistantComponent,
   ],
   templateUrl: './shell.component.html',
   styleUrl: './shell.component.scss',
